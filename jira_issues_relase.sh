@@ -143,10 +143,10 @@ function _get_issue_html() {
     local targetversions=$(echo "$issuejson" | jq -cMSr '.targetVersions | .[] | .name | "<span>\(.)</span>"')
 
 # Discard subtasks
-if [[ "$issuetype" == "5" ]];then
-    echo "Issuetype!!!!! $issuetype"
+#if [[ "$issuetype" == "5" ]];then
+#    echo "Issuetype!!!!! $issuetype"
 #    return 1
-fi
+#fi
 
 # if SP is not set, get from estimation
 if [[ "$SP" == "null" ]];then
@@ -165,7 +165,7 @@ if [[ "$parentkey" == "null" ]];then
 	parentkey=""
 fi
 
-htmlissueheader="<div id='$id'>
+htmlissue="<div id='$id'>
   <table class=card>
     <tr class=cardtop >
       <td class=logo><img class='logo' src='./images/logo-stratio-white.png' /></td>
@@ -186,7 +186,7 @@ htmlissueheader="<div id='$id'>
     "
 
 if [[ "$affectedversions" != "" ]];then
-  htmlissueheader="$htmlissueheader <tr>
+  htmlissue="$htmlissue <tr>
       <td class=versiontype>Affect:</td>
     </tr>
     <tr>
@@ -195,7 +195,7 @@ if [[ "$affectedversions" != "" ]];then
 fi
 
 if [[ "$fixversions" != "" ]];then
-  htmlissueheader="$htmlissueheader <tr>
+  htmlissue="$htmlissue <tr>
       <td class=versiontype>Fix:</td>
     </tr>
     <tr>
@@ -204,7 +204,7 @@ if [[ "$fixversions" != "" ]];then
 fi
 
 if [[ "$targetversions" != "" ]];then
-  htmlissueheader="$htmlissueheader <tr>
+  htmlissue="$htmlissue <tr>
       <td class=versiontype>Target:</td>
     </tr>
     <tr>
@@ -212,11 +212,11 @@ if [[ "$targetversions" != "" ]];then
     </tr>" 
 fi
 
-htmlissuefooter="
+htmlissue="$htmlissue 
   </table>
 </div>"
 
-echo "$htmlissueheader $htmlissuefooter"
+echo $htmlissue
 
 }
 
