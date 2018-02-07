@@ -1,11 +1,10 @@
 #/bin/sh
 
 PROJECT=$1
-BOARD=$2
-COOKIE=$3
+COOKIE=$2
 
 
-STRATIO_JIRA="https://stratio.atlassian.net/rest/agile/latest"
+STRATIO_JIRA="https://stratio.atlassian.net/rest/api/2"
 
 function _get_from_jira() {
     local path=$1
@@ -20,11 +19,13 @@ function _get_from_jira() {
     data=$(echo "$response" |head -1 )
     status_code=$(echo "$response" | tail -1)
     if [[ $status_code == 200 ]];then
+      echo "$response"
       echo "$status_code,$data"
       return 0
     fi
 
-    echo "$status_code, error getting data from $path"
+    echo "$status_code"
+    echo "error getting data from $path"
     return 1
 }
 
@@ -65,15 +66,6 @@ td.summary {
 }
 tr.cardbottom {
     height: 15%;
-}
-td.versiontype  {
-    border: 0px solid #62b6db; text-align: left; font-family: arial; font-weight: bold; font-style: normal; font-size: 12px; vertical-align: middle;
-}
-td.version  {
-    border: 0px solid #62b6db; text-align: left; font-family: arial; font-style: normal; font-size: 12px; vertical-align: middle;
-}
-td.version span {
-  display: inline-block;
 }
 td.priority  {
     border: 0px solid #62b6db; text-align: left; font-family: arial; font-weight: bold; font-style: normal; font-size: 12px; vertical-align: middle; 
@@ -138,14 +130,11 @@ function _get_issue_html() {
     local priorityname=$(echo "$issuejson" | jq -cMSr ".priorityname")
     local estimate=$(echo "$issuejson" | jq -cMSr ".estimate")
     local parentkey=$(echo "$issuejson" | jq -cMSr ".parent")
-    local fixversions=$(echo "$issuejson" | jq -cMSr '.fixVersions | .[] | .name | "<span>\(.)</span>"')
-    local affectedversions=$(echo "$issuejson" | jq -cMSr '.affectedVersions | .[] | .name |  "<span>\(.)</span>"')
-    local targetversions=$(echo "$issuejson" | jq -cMSr '.targetVersions | .[] | .name | "<span>\(.)</span>"')
 
-# Discard subtasks
+## Discard subtasks
 #if [[ "$issuetype" == "5" ]];then
 #    echo "Issuetype!!!!! $issuetype"
-#    return 1
+##    return 1
 #fi
 
 # if SP is not set, get from estimation
@@ -165,7 +154,7 @@ if [[ "$parentkey" == "null" ]];then
 	parentkey=""
 fi
 
-htmlissue="<div id='$id'>
+echo "<div id='$id'>
   <table class=card>
     <tr class=cardtop >
       <td class=logo><img class='logo' src='./images/logo-stratio-white.png' /></td>
@@ -182,83 +171,60 @@ htmlissue="<div id='$id'>
     <tr class=cardbottom>
       <td class=priority><img class='priority' src='./images/priority/$priority.svg' />&nbsp;<img class='issuetype' src='./images/type/$issuetype.svg' /></td>
       <td class=storypoints><span class=storypoints>$SP</span></td>
+      <td class=issuetype><span>PR: </span></td>
     </tr>
-    "
-
-if [[ "$affectedversions" != "" ]];then
-  htmlissue="$htmlissue <tr>
-      <td class=versiontype>Affect:</td>
-    </tr>
-    <tr>
-      <td class=version colspan=3>$affectedversions</td>
-    </tr>" 
-fi
-
-if [[ "$fixversions" != "" ]];then
-  htmlissue="$htmlissue <tr>
-      <td class=versiontype>Fix:</td>
-    </tr>
-    <tr>
-      <td class=version colspan=3>$fixversions</td>
-    </tr>" 
-fi
-
-if [[ "$targetversions" != "" ]];then
-  htmlissue="$htmlissue <tr>
-      <td class=versiontype>Target:</td>
-    </tr>
-    <tr>
-      <td class=version colspan=3>$targetversions</td>
-    </tr>" 
-fi
-
-htmlissue="$htmlissue 
   </table>
 </div>"
 
-echo $htmlissue
 
 }
 
-
 # get board_id
-result=$(_get_from_jira "board?projectKeyOrId=$PROJECT&name=$BOARD")
+result=$(_get_from_jira "search?jql=$PROJECT")
 IFS=',' read -r status_code boardjson <<< "$result"
-if [[ $status_code != 200 ]];then
-      exit 1
-fi
-board_id=$(echo "$boardjson" | jq -cMSr ".values | .[0] | .id")
-echo "BOARD ID: $board_id"
+#if [[ $status_code != 200 ]];then
+#      echo "$result"
+#      echo "Error getting board id: $status_code"
+#      echo "$boardjson"
+#      exit 1
+#fi
+#board_id=$(echo "$boardjson" | jq -cMSr ".values | .[0] | .id")
+#echo "BOARD ID: $board_id"
 
 
 # get active sprint
-result=$(_get_from_jira "board/$board_id/sprint?state=active")
-IFS=',' read -r status_code sprintjson <<< "$result"
-if [[ $status_code != 200 ]];then
-      exit 1
-fi
-sprint_id=$(echo "$sprintjson" | jq -cMSr ".values | .[0] | .id")
-echo "SPRINT_ID: $sprint_id"
+#result=$(_get_from_jira "search?jql=$PROJECT")
+#IFS=',' read -r status_code sprintjson <<< "$result"
+#if [[ $status_code != 200 ]];then
+#      echo "Error getting active sprint"
+#      exit 1
+#fi
+#sprint_id=$(echo "$sprintjson" | jq -cMSr ".values | .[0] | .id")
+#echo "SPRINT_ID: $sprint_id"
 
 
 # get active sprint issues
-result=$(_get_from_jira "sprint/$sprint_id/issue")
-IFS=',' read -r status_code issuesjson <<< "$result"
-if [[ $status_code != 200 ]];then
-      exit 1
-fi
+#result=$(_get_from_jira "search?jql=$PROJECT/issue")
+#IFS=',' read -r status_code issuesjson <<< "$result"
+#if [[ $status_code != 200 ]];then
+#      echo "$result"
+#      echo "Error running issue call"
+#      exit 1
+#fi
+#
+#echo $issuesjson
 
-echo $issuesjson
+#issues=$(echo "$issuesjson" | jq -cMSr ".issues | .[] " | jq -cMSr "{id,key,summary: .fields | .summary,SP: .fields | .customfield_10004,type: .fields | .issuetype | .id,typename: .fields | .issuetype | .name,priority: .fields | .priority | .id,priorityname: .fields | .priority | .name,estimate: .fields | .timetracking | .originalEstimateSeconds,parent: .fields | .parent | .key }")
+issues=$(echo "$result" | jq -cMSr ".issues | .[] " | jq -cMSr "{id,key,summary: .fields | .summary,SP: .fields | .customfield_10004,type: .fields | .issuetype | .id,typename: .fields | .issuetype | .name,priority: .fields | .priority | .id,priorityname: .fields | .priority | .name,estimate: .fields | .timetracking | .originalEstimateSeconds,parent: .fields | .parent | .key }")
 
-issues=$(echo "$issuesjson" | jq -cMSr ".issues | .[] " | jq -cMSr "{id,key,summary: .fields | .summary,SP: .fields | .customfield_10004,type: .fields | .issuetype | .id,typename: .fields | .issuetype | .name,priority: .fields | .priority | .id,priorityname: .fields | .priority | .name,estimate: .fields | .timetracking | .originalEstimateSeconds,parent: .fields | .parent | .key,fixVersions: .fields | .fixVersions,affectedVersions: .fields | .versions,targetVersions: .fields | .customfield_10700 }")
 
 # convert to HTML
-rm ./output-$PROJECT-$BOARD.html
-_get_header_html >> ./output-$PROJECT-$BOARD.html
+rm ./output-$PROJECT.html
+_get_header_html >> ./output-$PROJECT.html
 IFS='
 '
 for issue in $issues; do
 	issue_html=$(_get_issue_html $issue)
-	echo "$issue_html" >> ./output-$PROJECT-$BOARD.html
+	echo "$issue_html" >> ./output-$PROJECT.html
 done
-_get_footer_html >> ./output-$PROJECT-$BOARD.html
+_get_footer_html >> ./output-$PROJECT.html
