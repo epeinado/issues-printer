@@ -10,8 +10,16 @@ These instructions will get you a copy of the project up and running on your loc
 
 - jq 1.5
 
+To install jq in Unix
 ```
 $>sudo apt-get install jq
+```
+
+To install jq in Mac (first install homebrew)
+```
+$>/usr/bin/ruby -e "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install)"
+
+$>brew install jq
 ```
 
 ## Running the script
