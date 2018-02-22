@@ -37,25 +37,55 @@ body{
  -webkit-print-color-adjust:exact;
 }
 table.card {
-    height: 150px; width: 250px; border: 1px solid #62b6db; border-spacing: initial;
+    height: 150px; width: 250px; border: 1px solid #44B64C; border-spacing: initial;
 }
 tr {
-    background-color: #62b6db; border: 0px;
+    border: 0px;
+    background-color: #FFFFFF;
 }
+/* bug */
+tr.type1 {
+  background-color: #C73A30;
+}
+/* new feature */
+tr.type2 {
+  background-color: #FAAC58;
+}
+/* task */
+tr.type3 {
+  background-color: #3C8CAB;
+}
+/* epic */
+tr.type4 {
+  background-color: #8336B1;
+}
+/* sub-task */
+tr.type5 {
+  background-color: #8dbd90;
+}
+/* user story */
+tr.type10001 {
+  background-color: #44B64C;
+}
+/* improvement */
+tr.type10310 {
+  background-color: #F3D93A;
+}
+
 td {
-    background-color: #FFFFFF; border: 0px;
+    border: 0px;
 }
 tr.cardtop {
     height: 30px; border: 0px;
 }
 td.logo  {
-    width: 40%; border: 0px solid powderblue; background-color: #62b6db; text-align: center; font-family: arial; font-weight: bold; font-style: normal; font-size: 18px; line-height: 18px; vertical-align: middle; 
+    width: 40%; border: 0px solid powderblue; text-align: center; font-family: arial; font-weight: bold; font-style: normal; font-size: 18px; line-height: 18px; vertical-align: middle; 
 }
 td.header  {
-    width: 12%; border: 0px solid powderblue; background-color: #62b6db; text-align: right; font-family: arial; font-weight: bold; font-style: normal; font-size: 14px; line-height: 18px; vertical-align: middle; 
+    width: 12%; border: 0px solid powderblue; text-align: right; font-family: arial; font-weight: bold; font-style: normal; font-size: 14px; line-height: 18px; vertical-align: middle; 
 }
 td.key  {
-    width: 48%; border: 0px solid powderblue; background-color: #62b6db; text-align: right; font-family: arial; font-weight: bold; font-style: normal; font-size: 16px; line-height: 18px; vertical-align: middle; color: #FFFFFF
+    width: 48%; border: 0px solid powderblue; text-align: right; font-family: arial; font-weight: bold; font-style: normal; font-size: 16px; line-height: 18px; vertical-align: middle; color: #FFFFFF
 }
 tr.cardmiddle {
     height: 60%;
@@ -167,7 +197,7 @@ fi
 
 htmlissue="<div id='$id'>
   <table class=card>
-    <tr class=cardtop >
+    <tr class=\"cardtop type$issuetype \">
       <td class=logo><img class='logo' src='./images/logo-stratio-white.png' /></td>
       <td class=header></td>
       <td class=key><span>$key</span></td>
