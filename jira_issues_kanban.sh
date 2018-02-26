@@ -32,6 +32,7 @@ function _get_from_jira() {
 function _get_header_html() {
 echo "<html>
 <head>
+<meta http-equiv='Content-Type' content='text/html; charset=utf-8' />
 <style>
 @media all {
 body{
