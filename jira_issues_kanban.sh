@@ -49,6 +49,10 @@ tr {
 tr.type1 {
   background-color: #C73A30;
 }
+/* Sprint bug */
+tr.type10101 {
+  background-color: #C73A30;
+}
 /* new feature */
 tr.type2 {
   background-color: #FAAC58;
@@ -58,7 +62,7 @@ tr.type3 {
   background-color: #3C8CAB;
 }
 /* epic */
-tr.type4 {
+tr.type10000 {
   background-color: #8336B1;
 }
 /* sub-task */
@@ -70,7 +74,7 @@ tr.type10001 {
   background-color: #44B64C;
 }
 /* improvement */
-tr.type10310 {
+tr.type4 {
   background-color: #F3D93A;
 }
 
